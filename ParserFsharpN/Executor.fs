@@ -11,7 +11,5 @@ module Executor =
                             Environment.Exit(1)
     let parser = function
                  | Pcotntr223 d ->
-                     try
-                         P.parserPContr d
-                     with ex -> Logging.Log.logger ex
+                     P.parserPContr d
                  | _ -> ()
