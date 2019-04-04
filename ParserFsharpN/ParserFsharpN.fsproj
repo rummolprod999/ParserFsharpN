@@ -8,6 +8,7 @@
     <Compile Include="ModuleEnvVariable.fs" />
     <Compile Include="Logger.fs" />
     <Compile Include="EnvSetter.fs" />
+    <Compile Include="AllParsers.fs" />
     <Compile Include="Executor.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
