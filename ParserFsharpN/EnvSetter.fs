@@ -34,11 +34,21 @@ module rec Stn =
         use sr = new StreamReader(pathSet, System.Text.Encoding.Default)
         let s = Sample.Parse(sr.ReadToEnd())
         let Prefix = s.Prefix
-        let connectstring = sprintf "Server=%s;port=%d;Database=%s;User Id=%s;password=%s;CharSet=utf8;Convert Zero Datetime=True;default command timeout=3600;Connection Timeout=3600;SslMode=none" s.Server s.Port s.Database s.Userdb s.Passdb
+        let connectstring = sprintf "Server=%s;Port=%d;Database=%s;UserId=%s;Password=%s;CharSet=utf8;Convert Zero Datetime=True;default command timeout=3600;Connection Timeout=3600;SslMode=none" s.Server s.Port s.Database s.Userdb s.Passdb
         let (logPath, tmpPath) = CreateDirs()
         Settings := St({ TempPath = tmpPath
                          Prefix = s.Prefix
                          ConStr = connectstring })
+        let stn = match !Settings with
+                  | Stn.None ->
+                    Logging.Log.logger "bad settings"
+                    failwith "bad settings"
+                  | Stn.St x -> x
+        S.Settings <- {
+        TmpP = stn.TempPath
+        Pref = stn.Prefix
+        ConS = stn.ConStr
+        }
         ()
 
 
