@@ -8,13 +8,16 @@
     <Compile Include="ModuleEnvVariable.fs" />
     <Compile Include="Logger.fs" />
     <Compile Include="EnvSetter.fs" />
+    <Compile Include="IParser.fs" />
     <Compile Include="AbstractDocumentFtpEis.fs" />
     <Compile Include="AbstractParserFtpEis.fs" />
+    <Compile Include="ParserPcontr223.fs" />
     <Compile Include="AllParsers.fs" />
     <Compile Include="Executor.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="FluentFTP" Version="23.1.0" />
     <PackageReference Include="FSharp.Data" Version="3.0.0" />
     <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.15" />
     <PackageReference Include="MySql.Data.EntityFrameworkCore.Design" Version="8.0.15" />
