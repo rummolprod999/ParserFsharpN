@@ -10,6 +10,7 @@
     <Compile Include="EnvSetter.fs" />
     <Compile Include="IParser.fs" />
     <Compile Include="RegionsContext.fs" />
+    <Compile Include="ArchivePContr223Context.fs" />
     <Compile Include="AbstractDocumentFtpEis.fs" />
     <Compile Include="AbstractParserFtpEis.fs" />
     <Compile Include="ParserPcontr223.fs" />
