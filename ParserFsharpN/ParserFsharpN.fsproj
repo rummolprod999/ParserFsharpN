@@ -6,13 +6,16 @@
   <ItemGroup>
     <Compile Include="Argument.fs" />
     <Compile Include="ModuleEnvVariable.fs" />
+    <Compile Include="DocumentBuilder.fs" />
     <Compile Include="Logger.fs" />
     <Compile Include="EnvSetter.fs" />
     <Compile Include="IParser.fs" />
+    <Compile Include="IDocument.fs" />
     <Compile Include="RegionsContext.fs" />
     <Compile Include="ArchivePContr223Context.fs" />
     <Compile Include="AbstractDocumentFtpEis.fs" />
     <Compile Include="AbstractParserFtpEis.fs" />
+    <Compile Include="DocumentPContr223.fs" />
     <Compile Include="ParserPcontr223.fs" />
     <Compile Include="AllParsers.fs" />
     <Compile Include="Executor.fs" />

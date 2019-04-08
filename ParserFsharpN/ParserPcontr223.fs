@@ -7,6 +7,9 @@ open System.IO
 open System.Linq
 open Microsoft.EntityFrameworkCore
 open System.Text
+open System.Xml
+open Newtonsoft.Json
+open Newtonsoft.Json.Linq
 
 type ParserPcontr223(dir : string) =
       inherit AbstractParserFtpEis()
@@ -54,11 +57,23 @@ type ParserPcontr223(dir : string) =
             | x when (not (f.Name.ToLower().EndsWith(".xml"))) || f.Length = 0L -> ()
             | _ -> use sr = new StreamReader(f.FullName, Encoding.Default)
                    let str = __.DeleteBadSymbols(sr.ReadToEnd())
-                   __.ParsingXml(str, reg)
+                   __.ParsingXml(str, reg, f)
             ()
-      member private __.ParsingXml(s : string, reg : Region) =
-            printfn "%s" s
+      member private __.ParsingXml(s : string, reg : Region, f : FileInfo) =
+            let doc = new XmlDocument()
+            doc.LoadXml(s)
+            let json = JsonConvert.SerializeXmlNode(doc)
+            let j = JObject.Parse(json)
+            match j.SelectToken("$..purchaseContract.body.item") with
+            | null -> Logging.Log.logger (sprintf "Item tag not found in %s" f.FullName)
+            | x -> __.Worker(DocumentPcontr223(f, x, reg))
             ()
+
+      member private __.Worker(d : IDocument) =
+            try
+                  d.Worker()
+            with ex -> Logging.Log.logger ex
+
       member private __.GetArrLastFromFtp(pathParse : string, region : string) =
             let arch = __.GetListArrays(pathParse, S.F223)
             let yearsSeq = seq { 2015..DateTime.Now.Year }
