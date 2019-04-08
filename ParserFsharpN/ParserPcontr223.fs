@@ -6,5 +6,6 @@ type ParserPcontr223(dir : string) =
       
             override this.Parsing() =
                   let regions = this.GetRegions()
+                  
                   regions |> Seq.iter (fun x -> printfn "%s" x.Path223)
                   ()
