@@ -8,6 +8,7 @@ open System
 open System.IO
 open System.IO.Compression
 open System.Diagnostics
+open System.Text.RegularExpressions
 
 [<AbstractClass>]
 type AbstractParserFtpEis() =
@@ -63,19 +64,25 @@ type AbstractParserFtpEis() =
         file
 
     member __.Unzipper(file : FileInfo) =
-        let rPoint = file.Name.LastIndexOf('.')
-        let dirName = file.Name.Substring(0, rPoint)
+        let rPoint = file.FullName.LastIndexOf('.')
+        let dirName = file.FullName.Substring(0, rPoint)
         let dir = Directory.CreateDirectory(dirName)
         try
-            ZipFile.ExtractToDirectory(file.Name, dir.Name)
+            ZipFile.ExtractToDirectory(file.FullName, dir.FullName)
             file.Delete()
         with ex -> Logging.Log.logger (sprintf "Не удалось извлечь файл %s %s" file.Name ex.Message)
                    try
                        let proc = new Process()
-                       proc.StartInfo <- new ProcessStartInfo("unzip", String.Format("-B {0} -d {1}", file.Name, dir.Name))
+                       proc.StartInfo <- new ProcessStartInfo("unzip", String.Format("-B {0} -d {1}", file.FullName, dir.Name))
                        proc.Start() |> ignore
                        proc.WaitForExit()
                        Logging.Log.logger (sprintf "Извлекли файл альтернативным методом %s" file.Name)
                        ()
                    with e -> Logging.Log.logger (sprintf "Не удалось извлечь файл альтернативным методом %s %s" file.Name ex.Message)
         dir
+
+    member __.DeleteBadSymbols(s : string) =
+        let regex = new Regex(@"ns\d{1,2}:")
+        let mutable res = regex.Replace(s, "")
+        res <- res.Replace("oos:", "").Replace("", "")
+        res
