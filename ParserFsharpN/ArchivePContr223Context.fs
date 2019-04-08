@@ -4,8 +4,11 @@ open Microsoft.EntityFrameworkCore
 open System
 open MySql.Data.EntityFrameworkCore.Extensions
 open System.ComponentModel.DataAnnotations.Schema
+open System.ComponentModel.DataAnnotations
 
 type ArchivePContr223() =
+    [<Key>]
+    [<DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)>]
     [<property: Column("id")>]
     member val public Id = 0 with get, set
 
@@ -30,5 +33,5 @@ type ArchivePContr223Context() =
 
     override __.OnModelCreating(modelBuilder : ModelBuilder) =
          base.OnModelCreating(modelBuilder)
-         modelBuilder.Entity<Region>().ToTable(String.Format("arhiv_purchase_contracts223", S.Settings.Pref)) |> ignore
+         modelBuilder.Entity<ArchivePContr223>().ToTable(String.Format("arhiv_purchase_contracts223", S.Settings.Pref)) |> ignore
          ()

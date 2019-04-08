@@ -4,6 +4,10 @@ open System.Linq
 open Microsoft.EntityFrameworkCore
 open FluentFTP
 open System.Threading
+open System
+open System.IO
+open System.IO.Compression
+open System.Diagnostics
 
 [<AbstractClass>]
 type AbstractParserFtpEis() =
@@ -25,6 +29,7 @@ type AbstractParserFtpEis() =
                 ltmp |> Seq.iter (fun x -> arch.Add(x.Name, (uint64) x.Size))
                 wh <- false
                 if count > 1 then Logging.Log.logger (sprintf "Удалось получить список архивов после попытки %d" count)
+                ftp.Disconnect()
             with
                 | ex when ex.Message.Contains("Failed to change directory") -> Logging.Log.logger (sprintf "Не смогли найти директорию %s" pathParse)
                                                                                wh <- false
@@ -35,3 +40,42 @@ type AbstractParserFtpEis() =
                        Thread.Sleep(2000)
             ()
         arch
+
+    member __.GetArch(arch : string, pathParse : string, s : S.FtpUser) =
+        let mutable count = 1
+        let mutable wh = true
+        let fName = String.Format("{0}{1}{2}", S.Settings.TmpP, Path.DirectorySeparatorChar, arch)
+        while wh do
+            try
+                let ftp = new FtpClient("ftp.zakupki.gov.ru", s.User, s.Pass)
+                ftp.SetWorkingDirectory(pathParse)
+                ftp.DownloadFile(fName, arch) |> ignore
+                wh <- false
+                if count > 1 then Logging.Log.logger (sprintf "Удалось скачать архив после попытки %d" count)
+                ftp.Disconnect()
+            with
+                | ex when count > 50 -> Logging.Log.logger (sprintf "Не смогли скачать архив после попытки %d" count)
+                                        Logging.Log.logger ex
+                                        wh <- false
+                | _ -> count <- count + 1
+                       Thread.Sleep(5000)
+        let file = new FileInfo(fName)
+        file
+
+    member __.Unzipper(file : FileInfo) =
+        let rPoint = file.Name.LastIndexOf('.')
+        let dirName = file.Name.Substring(0, rPoint)
+        let dir = Directory.CreateDirectory(dirName)
+        try
+            ZipFile.ExtractToDirectory(file.Name, dir.Name)
+            file.Delete()
+        with ex -> Logging.Log.logger (sprintf "Не удалось извлечь файл %s %s" file.Name ex.Message)
+                   try
+                       let proc = new Process()
+                       proc.StartInfo <- new ProcessStartInfo("unzip", String.Format("-B {0} -d {1}", file.Name, dir.Name))
+                       proc.Start() |> ignore
+                       proc.WaitForExit()
+                       Logging.Log.logger (sprintf "Извлекли файл альтернативным методом %s" file.Name)
+                       ()
+                   with e -> Logging.Log.logger (sprintf "Не удалось извлечь файл альтернативным методом %s %s" file.Name ex.Message)
+        dir
