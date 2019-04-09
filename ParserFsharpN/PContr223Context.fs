@@ -50,7 +50,7 @@ type PContr223() =
         member val public FulFillmentDate = "" with get, set
         
         [<Column("id_customer")>]
-        member val public CustomerId = new Nullable<int>(0) with get, set
+        member val public CustomerId = 0 with get, set
         
         [<DefaultValue>]
         val mutable customer : Customer
@@ -68,7 +68,7 @@ type PContr223() =
             and set v = x.supplier <- v
             
         [<property: Column("cancel")>]
-        member val public Cancel = "" with get, set
+        member val public Cancel = 0 with get, set
         
         [<property: Column("xml")>]
         member val public Xml = "" with get, set
@@ -120,7 +120,7 @@ and  Contr223Prod() =
 
 
 
-type ArchivePContr223Context() =
+type PContr223Context() =
     inherit DbContext()
 
     [<DefaultValue>] val mutable contr223 : DbSet<PContr223>

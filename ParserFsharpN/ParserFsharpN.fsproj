@@ -7,10 +7,11 @@
     <Compile Include="Argument.fs" />
     <Compile Include="ModuleEnvVariable.fs" />
     <Compile Include="DocumentBuilder.fs" />
+    <Compile Include="ModuleExtensions.fs" />
+    <Compile Include="IDocument.fs" />
     <Compile Include="Logger.fs" />
     <Compile Include="EnvSetter.fs" />
     <Compile Include="IParser.fs" />
-    <Compile Include="IDocument.fs" />
     <Compile Include="CustomersContext.fs" />
     <Compile Include="SuppliersContext.fs" />
     <Compile Include="PContr223Context.fs" />
