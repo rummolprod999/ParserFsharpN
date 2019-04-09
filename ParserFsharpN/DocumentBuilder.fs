@@ -13,6 +13,6 @@ type DocumentBuilder() =
     
     member this.Return(x) = Success x
     
-    member this.Zero() = Error ""
+    member this.Zero() = Success "ok"
 
 
