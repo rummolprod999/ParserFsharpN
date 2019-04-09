@@ -33,5 +33,5 @@ type ArchivePContr223Context() =
 
     override __.OnModelCreating(modelBuilder : ModelBuilder) =
          base.OnModelCreating(modelBuilder)
-         modelBuilder.Entity<ArchivePContr223>().ToTable(String.Format("arhiv_purchase_contracts223", S.Settings.Pref)) |> ignore
+         modelBuilder.Entity<ArchivePContr223>().ToTable(String.Format("{0}arhiv_purchase_contracts223", S.Settings.Pref)) |> ignore
          ()

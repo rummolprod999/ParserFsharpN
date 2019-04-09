@@ -11,6 +11,9 @@
     <Compile Include="EnvSetter.fs" />
     <Compile Include="IParser.fs" />
     <Compile Include="IDocument.fs" />
+    <Compile Include="CustomersContext.fs" />
+    <Compile Include="SuppliersContext.fs" />
+    <Compile Include="PContr223Context.fs" />
     <Compile Include="RegionsContext.fs" />
     <Compile Include="ArchivePContr223Context.fs" />
     <Compile Include="AbstractDocumentFtpEis.fs" />
