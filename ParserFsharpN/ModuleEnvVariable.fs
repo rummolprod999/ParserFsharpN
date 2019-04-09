@@ -13,7 +13,7 @@ module S =
             User : string
             Pass : string
         }
-    let mutable argTuple = Argument.None
+    let mutable argTuple = Argument.Nan
     let mutable logFile = ""
     let mutable Settings = {
         TmpP = ""
