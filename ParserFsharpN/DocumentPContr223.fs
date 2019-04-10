@@ -83,10 +83,11 @@ type DocumentPcontr223() =
                     let innSup = GetStringFromJtoken __.item "purchaseContractData.supplier.mainInfo.inn"
                     let mutable nameSup = GetStringFromJtoken __.item "purchaseContractData.supplier.mainInfo.name"
                     if nameSup = "" then nameSup <- GetStringFromJtoken __.item "purchaseContractData.nonResidentInfo.info"
+                    let nsUp = nameSup
                     let kppSup = GetStringFromJtoken __.item "purchaseContractData.supplier.mainInfo.kpp"
                     let ogrnSup = GetStringFromJtoken __.item "purchaseContractData.supplier.mainInfo.ogrn"
                     if innSup <> "" || nameSup <> "" then
-                                                let sup = db.suppliers.FirstOrDefault(fun x -> x.Inn = innSup && x.Kpp = kppSup && x.OrganizationName = nameSup)
+                                                let sup = db.suppliers.FirstOrDefault(fun x -> x.Inn = innSup && x.Kpp = kppSup && x.OrganizationName = nsUp)
                                                 if sup <> null then supplier <- Some sup
                                                 else
                                                     let supC = Supplier()
