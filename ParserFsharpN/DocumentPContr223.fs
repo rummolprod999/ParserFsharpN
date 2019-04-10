@@ -81,7 +81,8 @@ type DocumentPcontr223() =
                                 ()
                     let mutable supplier : Option<Supplier> = None
                     let innSup = GetStringFromJtoken __.item "purchaseContractData.supplier.mainInfo.inn"
-                    let nameSup = GetStringFromJtoken __.item "purchaseContractData.supplier.mainInfo.name"
+                    let mutable nameSup = GetStringFromJtoken __.item "purchaseContractData.supplier.mainInfo.name"
+                    if nameSup = "" then nameSup <- GetStringFromJtoken __.item "purchaseContractData.nonResidentInfo.info"
                     let kppSup = GetStringFromJtoken __.item "purchaseContractData.supplier.mainInfo.kpp"
                     let ogrnSup = GetStringFromJtoken __.item "purchaseContractData.supplier.mainInfo.ogrn"
                     if innSup <> "" || nameSup <> "" then
