@@ -7,6 +7,7 @@ open MySql.Data.EntityFrameworkCore.Extensions
 open System.ComponentModel.DataAnnotations.Schema
 open System.ComponentModel.DataAnnotations
 
+[<AllowNullLiteral>]
 type PContr223() =
         [<Key>]
         [<DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)>]
@@ -38,7 +39,7 @@ type PContr223() =
         member val public NotificationNumber = "" with get, set
         
         [<property: Column("contract_price")>]
-        member val public ContactPrice = 0m with get, set
+        member val public ContractPrice = 0m with get, set
         
         [<property: Column("currency")>]
         member val public Currency = "" with get, set

@@ -6,6 +6,7 @@ open MySql.Data.EntityFrameworkCore.Extensions
 open System.ComponentModel.DataAnnotations.Schema
 open System.ComponentModel.DataAnnotations
 
+[<AllowNullLiteral>]
 [<Table("od_supplier")>]
 type Supplier() =
 
