@@ -1,4 +1,5 @@
 namespace ParserFsharp
+open System
 open System.IO
 open Newtonsoft.Json
 open Newtonsoft.Json.Linq
@@ -112,13 +113,17 @@ type DocumentPcontr223() =
                                                         db.SaveChanges() |> ignore
                     let currentContractStage = GetStringFromJtoken __.item "purchaseContractData.status"
                     let regionCode = __.region.Conf
-                    let url = GetStringFromJtoken __.item "purchaseContractData.urlEIS"
+                    let mutable url = GetStringFromJtoken __.item "purchaseContractData.urlEIS"
+                    if url = "" then url <- GetStringFromJtoken __.item "purchaseContractData.urlOOS"
                     let contrCreateDateT = GetDateTimeStringFromJtoken __.item "purchaseContractData.contractCreateDate"
                     let contrCreateDate = contrCreateDateT.DateFromStringRus("yyyy-MM-dd")
                     let createDateT = GetDateTimeStringFromJtoken __.item "purchaseContractData.createDateTime"
                     let createDate = createDateT.Replace("T", " ").DateFromStringRus("yyyy-MM-dd HH:mm:ss")
                     let notificationNumber = GetStringFromJtoken __.item "purchaseContractData.purchaseInfo.purchaseNoticeNumber"
-                    let contractPrice = GetDecimalFromJtoken __.item "purchaseContractData.sum"
+                    let contractPriceT = GetStringFromJtoken __.item "purchaseContractData.sum"
+                    let contractPrice = match Decimal.TryParse(contractPriceT.GetPriceFromString()) with
+                                        | (true, y) -> y
+                                        | _ -> 0m
                     let currency = GetStringFromJtoken __.item "purchaseContractData.currency.code"
                     let fulFillmentDate = GetStringFromJtoken __.item "purchaseContractData.fulfillmentDate"
                     let xml = __.GetXml(__.file.FullName)
@@ -150,6 +155,9 @@ type DocumentPcontr223() =
                     match updated with
                     | true -> AbstractDocumentFtpEis.Upd <- AbstractDocumentFtpEis.Upd + 1
                     | false -> AbstractDocumentFtpEis.Add <- AbstractDocumentFtpEis.Add + 1
+                    let products = __.ReturnItems(contract)
+                    db.Products.AddRange(products)
+                    db.SaveChanges() |> ignore
                     return ""
                     }
                 match res with
@@ -157,3 +165,32 @@ type DocumentPcontr223() =
                 | Error e when e = "" -> ()
                 | Error r -> Logging.Log.logger r
                 ()
+
+      member private __.ReturnItems(contr : PContr223) =
+          let ar = new List<Contr223Prod>()
+          let items = __.item.GetElements("purchaseContractData.contractItems.contractItem")
+          for item in items do
+              let mutable name = GetStringFromJtoken item "additionalInfo"
+              let okpdCode = GetStringFromJtoken item "okdp.code"
+              let okpdName = GetStringFromJtoken item "okdp.name"
+              if name = "" then name <- okpdName
+              let okvedCode = GetStringFromJtoken item "okved.code"
+              let okvedName = GetStringFromJtoken item "okved.name"
+              let qT = GetStringFromJtoken item "qty"
+              let qty = match Decimal.TryParse(qT.GetPriceFromString()) with
+                                        | (true, y) -> y
+                                        | _ -> 0m
+              let okei = GetStringFromJtoken item "okei.name"
+              let product = Contr223Prod()
+              product.Contract <- contr
+              product.Name <- name
+              product.OkpdCode <- okpdCode
+              product.OkpdName <- okpdName
+              product.OkvedCode <- okvedCode
+              product.OkvedName <- okvedName
+              product.Quantity <- qty
+              product.Okei <- okei
+              ar.Add(product)
+              DocumentPcontr223.AddProd <- DocumentPcontr223.AddProd + 1
+              ()
+          ar

@@ -97,6 +97,12 @@ and  Contr223Prod() =
         member x.PContr223Id
             with get () = x.pContr223Id
             and set v = x.pContr223Id <- v
+        
+        [<DefaultValue>]
+        val mutable contract : PContr223
+        member x.Contract
+            with get () = x.contract
+            and set v = x.contract <- v
             
         [<property: Column("name")>]
         member val public Name = "" with get, set

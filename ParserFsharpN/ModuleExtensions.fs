@@ -4,6 +4,7 @@ open Newtonsoft.Json
 open Newtonsoft.Json.Linq
 open System.Globalization
 open System.Text.RegularExpressions
+open System.Collections.Generic
 
 module NewtonExt =
 
@@ -24,12 +25,12 @@ module NewtonExt =
             match (^a : (member SelectToken : string -> JToken) (x, s)) with
             | null -> 0
             | r -> ((int) r)
-    
+
     let inline GetDecimalFromJtoken (x : ^a) (s : string) =
             match (^a : (member SelectToken : string -> JToken) (x, s)) with
             | null -> 0m
             | r -> ((decimal) r)
-            
+
     let inline GetDateTimeFromJtoken (x : ^a) (s : string) =
             match (^a : (member SelectToken : string -> JToken) (x, s)) with
             | null -> DateTime.MinValue
@@ -55,6 +56,15 @@ module NewtonExt =
             | null -> Error err
             | x -> Success((int) x)
 
+        member this.GetElements(path : string) =
+            let els = new List<JToken>()
+            match this.SelectToken(path) with
+            | null -> ()
+            | x when x.Type = JTokenType.Object -> els.Add(x)
+            | x when x.Type = JTokenType.Array -> els.AddRange(x)
+            | _ -> ()
+            els
+
     type System.String with
 
         member this.Get1FromRegexp(regex : string) : string option =
@@ -67,7 +77,7 @@ module NewtonExt =
             match this.Get1FromRegexp templ with
             | Some x -> Regex.Replace(x.Replace(",", ".").Trim(), @"\s+", "")
             | None -> ""
-        
+
         member this.DateFromStringRus(pat : string) =
             try
                 DateTime.ParseExact(this, pat, CultureInfo.CreateSpecificCulture("ru-RU"))
