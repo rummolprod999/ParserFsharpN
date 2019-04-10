@@ -47,7 +47,7 @@ type DocumentPcontr223() =
                     let kppCus = GetStringFromJtoken __.item "purchaseContractData.customerInfo.kpp"
                     let fullNameCus = GetStringFromJtoken __.item "purchaseContractData.customerInfo.fullName"
                     if innCus <> "" || fullNameCus <> "" then
-                            let cus = db.customers.FirstOrDefault(fun x -> x.Inn = innCus && x.Kpp = kppCus)
+                            let cus = db.customers.FirstOrDefault(fun x -> x.Inn = innCus && x.Kpp = kppCus && x.FullName = fullNameCus)
                             if cus <> null then customer <- Some cus
                             else
                                 let ogrnCus = GetStringFromJtoken __.item "purchaseContractData.customerInfo.ogrn"
@@ -86,7 +86,7 @@ type DocumentPcontr223() =
                     let kppSup = GetStringFromJtoken __.item "purchaseContractData.supplier.mainInfo.kpp"
                     let ogrnSup = GetStringFromJtoken __.item "purchaseContractData.supplier.mainInfo.ogrn"
                     if innSup <> "" || nameSup <> "" then
-                                                let sup = db.suppliers.FirstOrDefault(fun x -> x.Inn = innSup && x.Kpp = kppSup)
+                                                let sup = db.suppliers.FirstOrDefault(fun x -> x.Inn = innSup && x.Kpp = kppSup && x.OrganizationName = nameSup)
                                                 if sup <> null then supplier <- Some sup
                                                 else
                                                     let supC = Supplier()
