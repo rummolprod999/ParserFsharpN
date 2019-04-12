@@ -125,7 +125,7 @@ type DocumentPcontr223() =
                   match reader.HasRows with
                   | true ->
                     reader.Read() |> ignore
-                    idCustomer := reader.GetInt32("id")
+                    idSupplier := reader.GetInt32("id")
                     reader.Close()
                   | false ->
                     reader.Close()
