@@ -56,7 +56,7 @@ type DocumentPcontr223() =
               | y -> y.Close()
               if maxNum <> 0 then updated <- true
               if version > maxNum then
-                    let selectDocs = sprintf "SELECT id FROM %spurchase_contracts223 WHERE regnum = @regnum" S.Settings.Pref
+                    let selectDocs = sprintf "SELECT id, cancel FROM %spurchase_contracts223 WHERE regnum = @regnum" S.Settings.Pref
                     let cmd2 : MySqlCommand = new MySqlCommand(selectDocs, con)
                     cmd2.Prepare()
                     cmd2.Parameters.AddWithValue("@regnum", regNum) |> ignore
