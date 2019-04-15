@@ -35,6 +35,7 @@ type ParserPcontr223(dir : string) =
                              with ex -> Logging.Log.logger ex
                        match dir with
                        | "daily" -> __.WriteArrToTale(arr)
+                       | "last" -> __.WriteArrToTaleLast(arr)
                        | _ -> ()
                   ()
 
@@ -81,7 +82,16 @@ type ParserPcontr223(dir : string) =
             let ret = query { for a in arch do
                               where (yearsSeq.Any(fun x -> (fst a).Contains(x.ToString())))
                               select a }
-            ret.ToList()
+            use context = new ArchivePContr223Context()
+            let arr = new List<string * uint64>()
+            for r in ret do
+                  match (snd r) with
+                  | 0UL -> Logging.Log.logger (sprintf "!!!archive size = 0 %s" <| fst r)
+                  | _ -> let arr_last = sprintf "last_%s" (fst r)
+                         let res = context.Archives.AsNoTracking().Where(fun x -> x.Archive = arr_last && (uint64 x.SizeArch = (snd r) || uint64 x.SizeArch = 0UL)).Count()
+                         if res = 0 then arr.Add(r)
+                         ()
+            arr
 
       member private __.GetArrCurrFromFtp(pathParse : string, region : string) =
             let arch = __.GetListArrays(pathParse, S.F223)
@@ -105,6 +115,18 @@ type ParserPcontr223(dir : string) =
           for l in lst do
                 let arr = ArchivePContr223()
                 arr.Archive <- fst l
+                arr.SizeArch <- int64 <| snd l
+                context.Archives.Add(arr) |> ignore
+                context.SaveChanges() |> ignore
+                ()
+          ()
+
+      member private __.WriteArrToTaleLast(lst : List<string * uint64>) =
+          use context = new ArchivePContr223Context()
+          for l in lst do
+                let arr = ArchivePContr223()
+                let arr_last = sprintf "last_%s" (fst l)
+                arr.Archive <- arr_last
                 arr.SizeArch <- int64 <| snd l
                 context.Archives.Add(arr) |> ignore
                 context.SaveChanges() |> ignore
