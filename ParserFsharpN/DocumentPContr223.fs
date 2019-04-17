@@ -24,7 +24,7 @@ type DocumentPcontr223() =
       inherit AbstractDocumentFtpEis()
       interface IDocument with
         override __.Worker() =
-            __.WorkerMysql()
+            __.WorkerEntity()
 
 
       member private __.ReturnItems(contr : PContr223) =
@@ -68,7 +68,7 @@ type DocumentPcontr223() =
                                   | x -> (int) x
                     let mutable cancel = 0
                     let mutable updated = false
-                    let exist = db.Contr223.AsNoTracking().Where(fun x -> x.RegNum = regNum && x.VersionNumber = version) .Select(fun x -> x.Id).Count()
+                    let exist = db.Contr223.Where(fun x -> x.RegNum = regNum && x.VersionNumber = version) .Select(fun x -> x.Id).Count()
                     if exist > 0 then return! Error ""
                     let maxNum = db.Contr223.Where(fun x -> x.RegNum = regNum).Select(fun x -> x.VersionNumber).DefaultIfEmpty(0) .Max()
                     if maxNum <> 0 then updated <- true
@@ -82,7 +82,7 @@ type DocumentPcontr223() =
                     let kppCus = GetStringFromJtoken __.item "purchaseContractData.customerInfo.kpp"
                     let fullNameCus = GetStringFromJtoken __.item "purchaseContractData.customerInfo.fullName"
                     if innCus <> "" || fullNameCus <> "" then
-                            let cus = db.customers.AsNoTracking().FirstOrDefault (fun x -> x.Inn = innCus && x.Kpp = kppCus && x.FullName = fullNameCus)
+                            let cus = db.customers.FirstOrDefault (fun x -> x.Inn = innCus && x.Kpp = kppCus && x.FullName = fullNameCus)
                             if cus <> null then customer <- Some cus
                             else
                                 let ogrnCus = GetStringFromJtoken __.item "purchaseContractData.customerInfo.ogrn"
@@ -122,7 +122,7 @@ type DocumentPcontr223() =
                     let kppSup = GetStringFromJtoken __.item "purchaseContractData.supplier.mainInfo.kpp"
                     let ogrnSup = GetStringFromJtoken __.item "purchaseContractData.supplier.mainInfo.ogrn"
                     if innSup <> "" || nameSup <> "" then
-                                                let sup = db.suppliers.AsNoTracking().FirstOrDefault (fun x -> x.Inn = innSup && x.Kpp = kppSup && x.OrganizationName = nsUp)
+                                                let sup = db.suppliers.FirstOrDefault (fun x -> x.Inn = innSup && x.Kpp = kppSup && x.OrganizationName = nsUp)
                                                 if sup <> null then supplier <- Some sup
                                                 else
                                                     let supC = Supplier()
