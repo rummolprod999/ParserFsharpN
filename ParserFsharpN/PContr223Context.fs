@@ -3,14 +3,13 @@ namespace ParserFsharp
 open Microsoft.EntityFrameworkCore
 open System
 open System.Collections.Generic
-open MySql.Data.EntityFrameworkCore.Extensions
 open System.ComponentModel.DataAnnotations.Schema
 open System.ComponentModel.DataAnnotations
 
 [<AllowNullLiteral>]
 type PContr223() =
         [<Key>]
-        [<DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)>]
+        [<DatabaseGenerated(DatabaseGeneratedOption.Identity)>]
         [<property: Column("id")>]
         member val public Id = 0 with get, set
         
@@ -86,7 +85,7 @@ type PContr223() =
 
 and  Contr223Prod() =
         [<Key>]
-        [<DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)>]
+        [<DatabaseGenerated(DatabaseGeneratedOption.Identity)>]
         [<property: Column("id")>]
         member val public Id = 0 with get, set
         

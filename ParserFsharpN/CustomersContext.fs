@@ -1,8 +1,5 @@
 namespace ParserFsharp
 
-open Microsoft.EntityFrameworkCore
-open System
-open MySql.Data.EntityFrameworkCore.Extensions
 open System.ComponentModel.DataAnnotations.Schema
 open System.ComponentModel.DataAnnotations
 
@@ -11,7 +8,7 @@ open System.ComponentModel.DataAnnotations
 type Customer() =
 
         [<Key>]
-        [<DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)>]
+        [<DatabaseGenerated(DatabaseGeneratedOption.Identity)>]
         [<property: Column("id")>]
         member val public Id = 0 with get, set
 

@@ -57,7 +57,7 @@ module NewtonExt =
             | x -> Success((int) x)
 
         member this.GetElements(path : string) =
-            let els = new List<JToken>()
+            let els = List<JToken>()
             match this.SelectToken(path) with
             | null -> ()
             | x when x.Type = JTokenType.Object -> els.Add(x)
@@ -65,7 +65,7 @@ module NewtonExt =
             | _ -> ()
             els
 
-    type System.String with
+    type String with
 
         member this.Get1FromRegexp(regex : string) : string option =
             match this with

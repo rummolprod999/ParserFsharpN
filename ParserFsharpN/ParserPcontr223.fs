@@ -1,10 +1,8 @@
 namespace ParserFsharp
 open System
-open Microsoft.FSharp.Data
 open System.Linq
 open System.Collections.Generic
 open System.IO
-open System.Linq
 open Microsoft.EntityFrameworkCore
 open System.Text
 open System.Xml
@@ -19,7 +17,7 @@ type ParserPcontr223(dir : string) =
                   let regions = __.GetRegions()
 
                   for r in regions do
-                       let mutable arr = new List<string * uint64>()
+                       let mutable arr = List<string * uint64>()
                        let mutable pathParse = ""
                        match dir with
 
@@ -53,15 +51,15 @@ type ParserPcontr223(dir : string) =
                   ()
             ()
 
-      member private __.Revision(f : FileInfo, pathParse : string, reg : Region) =
+      member private __.Revision(f : FileInfo, _ : string, reg : Region) =
             match f with
-            | x when (not (f.Name.ToLower().EndsWith(".xml"))) || f.Length = 0L -> ()
+            | _ when (not (f.Name.ToLower().EndsWith(".xml"))) || f.Length = 0L -> ()
             | _ -> use sr = new StreamReader(f.FullName, Encoding.Default)
                    let str = __.DeleteBadSymbols(sr.ReadToEnd())
                    __.ParsingXml(str, reg, f)
             ()
       member private __.ParsingXml(s : string, reg : Region, f : FileInfo) =
-            let doc = new XmlDocument()
+            let doc = XmlDocument()
             doc.LoadXml(s)
             let json = JsonConvert.SerializeXmlNode(doc)
             let j = JObject.Parse(json)
@@ -78,12 +76,12 @@ type ParserPcontr223(dir : string) =
       member private __.GetArrLastFromFtp(pathParse : string, region : string) =
             let arch = __.GetListArrays(pathParse, S.F223)
             let yearsSeq = seq { 2015..DateTime.Now.Year }
-            let searchStr = seq { for s in yearsSeq do yield sprintf "_%s_%d" region s }
+            let _ = seq { for s in yearsSeq do yield sprintf "_%s_%d" region s }
             let ret = query { for a in arch do
                               where (yearsSeq.Any(fun x -> (fst a).Contains(x.ToString())))
                               select a }
             use context = new ArchivePContr223Context()
-            let arr = new List<string * uint64>()
+            let arr = List<string * uint64>()
             for r in ret do
                   match (snd r) with
                   | 0UL -> Logging.Log.logger (sprintf "!!!archive size = 0 %s" <| fst r)
@@ -96,12 +94,12 @@ type ParserPcontr223(dir : string) =
       member private __.GetArrCurrFromFtp(pathParse : string, region : string) =
             let arch = __.GetListArrays(pathParse, S.F223)
             let yearsSeq = seq { 2015..DateTime.Now.Year }
-            let searchStr = seq { for s in yearsSeq do yield sprintf "_%s_%d" region s }
+            let _ = seq { for s in yearsSeq do yield sprintf "_%s_%d" region s }
             let ret = query { for a in arch do
                               where (yearsSeq.Any(fun x -> (fst a).Contains(x.ToString())))
                               select a }
             use context = new ArchivePContr223Context()
-            let arr = new List<string * uint64>()
+            let arr = List<string * uint64>()
             for r in ret do
                   match (snd r) with
                   | 0UL -> Logging.Log.logger (sprintf "!!!archive size = 0 %s" <| fst r)

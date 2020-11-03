@@ -19,7 +19,7 @@ type AbstractParserFtpEis() =
         regions
 
     member __.GetListArrays(pathParse : string, s : S.FtpUser) =
-        let mutable arch = new List<string * uint64>()
+        let mutable arch = List<string * uint64>()
         let mutable count = 1
         let mutable wh = true
         while wh do
@@ -60,7 +60,7 @@ type AbstractParserFtpEis() =
                                         wh <- false
                 | _ -> count <- count + 1
                        Thread.Sleep(5000)
-        let file = new FileInfo(fName)
+        let file = FileInfo(fName)
         file
 
     member __.Unzipper(file : FileInfo) =
@@ -73,7 +73,7 @@ type AbstractParserFtpEis() =
         with ex -> Logging.Log.logger (sprintf "Не удалось извлечь файл %s %s" file.Name ex.Message)
                    try
                        let proc = new Process()
-                       proc.StartInfo <- new ProcessStartInfo("unzip", String.Format("-B {0} -d {1}", file.FullName, dir.Name))
+                       proc.StartInfo <- ProcessStartInfo("unzip", String.Format("-B {0} -d {1}", file.FullName, dir.Name))
                        proc.Start() |> ignore
                        proc.WaitForExit()
                        Logging.Log.logger (sprintf "Извлекли файл альтернативным методом %s" file.Name)
@@ -82,7 +82,7 @@ type AbstractParserFtpEis() =
         dir
 
     member __.DeleteBadSymbols(s : string) =
-        let regex = new Regex(@"ns\d{1,2}:")
+        let regex = Regex(@"ns\d{1,2}:")
         let mutable res = regex.Replace(s, "")
         res <- res.Replace("oos:", "").Replace("", "")
         res

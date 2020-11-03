@@ -6,7 +6,7 @@ open System.Text
 open System.Threading
 
 module Logging =
-    let locker = new Object()
+    let locker = Object()
     
     type Log() =
         static member logger ([<ParamArray>] args : Object []) =

@@ -1,8 +1,6 @@
 namespace ParserFsharp
 open System
-open System
 open System.IO
-open Newtonsoft.Json
 open Newtonsoft.Json.Linq
 open NewtonExt
 open Microsoft.EntityFrameworkCore
@@ -28,7 +26,7 @@ type DocumentPcontr223() =
 
 
       member private __.ReturnItems(contr : PContr223) =
-          let ar = new List<Contr223Prod>()
+          let ar = List<Contr223Prod>()
           let items = __.item.GetElements("purchaseContractData.contractItems.contractItem")
           for item in items do
               let mutable name = GetStringFromJtoken item "additionalInfo"
@@ -198,7 +196,7 @@ type DocumentPcontr223() =
                     return ""
                     }
                 match res with
-                | Success r -> ()
+                | Success _ -> ()
                 | Error e when e = "" -> ()
                 | Error r -> Logging.Log.logger r
                 ()

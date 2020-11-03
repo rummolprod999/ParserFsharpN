@@ -33,9 +33,9 @@ module rec Stn =
         let pathSet = sprintf "%s%csettings.json" PathProgram Path.DirectorySeparatorChar
         use sr = new StreamReader(pathSet, System.Text.Encoding.Default)
         let s = Sample.Parse(sr.ReadToEnd())
-        let Prefix = s.Prefix
+        let _ = s.Prefix
         let connectstring = sprintf "server=%s;port=%d;database=%s;user=%s;password=%s;CharSet=utf8;Convert Zero Datetime=True;default command timeout=3600;Connection Timeout=3600;SslMode=none" s.Server s.Port s.Database s.Userdb s.Passdb
-        let (logPath, tmpPath) = CreateDirs()
+        let (_, tmpPath) = CreateDirs()
         Settings := St({ TempPath = tmpPath
                          Prefix = s.Prefix
                          ConStr = connectstring })
@@ -57,7 +57,7 @@ module rec Stn =
         let tmpPath = sprintf "%s%ctempdir_%s" PathProgram Path.DirectorySeparatorChar <| S.argTuple.GetType().Name
         match Directory.Exists(tmpPath) with
         | true ->
-                let dirInfo = new DirectoryInfo(tmpPath)
+                let dirInfo = DirectoryInfo(tmpPath)
                 dirInfo.Delete(true)
                 Directory.CreateDirectory(tmpPath) |> ignore
         | false -> Directory.CreateDirectory(tmpPath) |> ignore

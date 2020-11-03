@@ -1,7 +1,6 @@
 namespace ParserFsharp
 open Microsoft.EntityFrameworkCore
 open System
-open MySql.Data.EntityFrameworkCore.Extensions
 open System.ComponentModel.DataAnnotations.Schema
 
 type Region() =
